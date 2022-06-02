@@ -67,13 +67,13 @@ public class PxPhysics : PxBase<PxPhysics>
     /// extensions which may require allocation.
     /// </summary>
     /// <returns></returns>
-    public bool InitExtensions()
+    public bool InitExtensions(PxPvd pvd = null)
     {
-        return Native.PxPhysics.InitExtensions(NativePtr);
+        return Native.PxPhysics.InitExtensions(NativePtr, pvd?.NativePtr ?? IntPtr.Zero);
     }
 
-    public static PxPhysics Create(PxFoundation foundation, uint version)
+    public static PxPhysics Create(PxFoundation foundation, uint version, bool trackOutstandingAllocations, PxPvd pvd)
     {
-        return GetOrCreateCache(Native.PxFoundation.CreatePhysics(foundation.NativePtr, version), ptr => new PxPhysics(ptr));
+        return GetOrCreateCache(Native.PxFoundation.CreatePhysics(foundation.NativePtr, version, trackOutstandingAllocations, pvd.NativePtr), ptr => new PxPhysics(ptr));
     }
 }

@@ -2,14 +2,16 @@ namespace ChickenWithLips.PhysX.Net;
 
 using System;
 
-public abstract class PxBase<T> : IDisposable
+public interface PxBase
+{
+}
+
+public abstract class PxBase<T> : PxBase, IDisposable
     where T : class
 {
     #region Members
 
-    public IntPtr NativePtr { get; }
-
-    private static PxInstanceCache<T> _cache = new();
+    public IntPtr NativePtr { get; protected set; }
 
     #endregion
 
@@ -20,7 +22,7 @@ public abstract class PxBase<T> : IDisposable
         NativePtr = ptr;
 
         if (automaticallyRegisterInCache) {
-            ManuallyRegisterCache(ptr, this as T);
+            ManuallyRegisterCache(ptr, this);
         }
     }
 
@@ -29,14 +31,14 @@ public abstract class PxBase<T> : IDisposable
         Dispose(false);
     }
 
-    protected static T GetOrCreateCache(IntPtr ptr, PxInstanceCache<T>.CreateInstance createInstance)
+    protected static T GetOrCreateCache(IntPtr ptr, PxInstanceCache.CreateInstance createInstance)
     {
-        return _cache.GetOrCreate(ptr, createInstance);
+        return PxInstanceCache.Instance.GetOrCreate<T>(ptr, createInstance);
     }
 
-    protected static void ManuallyRegisterCache(IntPtr ptr, T instance)
+    protected static void ManuallyRegisterCache(IntPtr ptr, PxBase instance)
     {
-        _cache.ManuallyRegisterCache(ptr, instance);
+        PxInstanceCache.Instance.ManuallyRegisterCache(ptr, instance);
     }
 
     #endregion
@@ -62,7 +64,7 @@ public abstract class PxBase<T> : IDisposable
             return;
         }
 
-        _cache.Remove(NativePtr);
+        PxInstanceCache.Instance.Remove(NativePtr);
 
         IsDisposed = true;
     }

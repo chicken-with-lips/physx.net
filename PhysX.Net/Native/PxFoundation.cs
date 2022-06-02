@@ -8,5 +8,5 @@ internal static class PxFoundation
     public static extern IntPtr Create(uint version);
 
     [DllImport("PhysX.Native", EntryPoint = "physx_PxFoundation_CreatePhysics")]
-    public static extern IntPtr CreatePhysics(IntPtr foundation, uint version);
+    public static extern IntPtr CreatePhysics(IntPtr foundation, uint version, bool trackOutstandingAllocations, IntPtr pvd);
 }

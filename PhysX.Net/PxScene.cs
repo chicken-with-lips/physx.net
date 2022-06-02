@@ -74,7 +74,7 @@ public class PxScene : PxBase<PxScene>
     public static PxScene Create(PxPhysics physics, PxSceneDesc sceneDesc)
     {
         var transfer = new PxSceneDescTransfer(sceneDesc);
-        return new PxScene(Native.PxPhysics.CreateScene(physics.NativePtr, ref transfer));
+        return GetOrCreateCache(Native.PxPhysics.CreateScene(physics.NativePtr, ref transfer), ptr => new PxScene(ptr));
     }
 
     #endregion
@@ -99,7 +99,7 @@ public struct PxSceneDesc
     /// <summary>
     /// Possible notification callback.
     /// </summary>
-    public IntPtr SimulationEventCallback;
+    public PxSimulationEventCallback SimulationEventCallback;
 
     /// <summary>
     /// Possible asynchronous callback for contact modification.
@@ -131,13 +131,13 @@ public struct PxSceneDesc
     /// This parameter is compulsory. If you don't want to define your own filter shader you can use the default shader
     /// #PxDefaultSimulationFilterShader which can be found in the PhysX extensions library.
     /// </remarks>
-    public IntPtr FilterShader;
+    public PxFilterShaderCallback FilterShader;
 
     /// <summary>
     /// A custom collision filter callback which can be used to implement more complex filtering operations which need
     /// access to the simulation state, for example.
     /// </summary>
-    public IntPtr FilterCallback;
+    public PxSimulationFilterCallback FilterCallback;
 
     /// <summary>
     /// Filtering mode for kinematic-kinematic pairs in the broadphase.
@@ -541,14 +541,14 @@ public struct PxSceneDesc
     public PxSceneDesc(PxTolerancesScale scale)
     {
         Gravity = Vector3.Zero;
-        SimulationEventCallback = IntPtr.Zero;
+        SimulationEventCallback = null;
         ContactModifyCallback = IntPtr.Zero;
         CcdContactModifyCallback = IntPtr.Zero;
 
         FilterShaderData = IntPtr.Zero;
         FilterShaderDataSize = 0;
-        FilterShader = IntPtr.Zero;
-        FilterCallback = IntPtr.Zero;
+        FilterShader = null;
+        FilterCallback = null;
 
         KineKineFilteringMode = PxPairFilteringMode.Default;
         StaticKineFilteringMode = PxPairFilteringMode.Default;
@@ -984,3 +984,9 @@ public enum PxSceneQueryUpdateMode
     /// <summary>No work is done, no update of scene queries.</summary>
     BuildDisabledCommitDisabled
 }
+
+public delegate PxFilterFlag PxFilterShaderCallback(
+	PxFilterObjectFlag attributes0, ref PxFilterData filterData0,
+	PxFilterObjectFlag attributes1, ref PxFilterData filterData1,
+    out PxPairFlag pairFlags
+);

@@ -1,6 +1,5 @@
 #include "PxPhysics.h"
 #include "PxScene.h"
-#include "extensions/PxDefaultSimulationFilterShader.h"
 
 using namespace physx;
 
@@ -8,8 +7,8 @@ extern "C" void physx_PxScene_Simulate(PxScene *scene, float elapsedTime) {
     scene->simulate(elapsedTime);
 }
 
-extern "C" bool physx_PxScene_FetchResults(PxScene *scene, uint *errorState) {
-    return scene->fetchResults(scene);
+extern "C" bool physx_PxScene_FetchResults(PxScene *scene, bool block, uint *errorState) {
+    return scene->fetchResults(block, errorState);
 }
 
 extern "C" void physx_PxScene_AddActor(PxScene *scene, PxActor *actor) {

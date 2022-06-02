@@ -11,6 +11,6 @@ public class PxMaterial : PxBase<PxMaterial>
 
     public static PxMaterial Create(PxPhysics physics, float staticFriction, float dynamicFriction, float restitution)
     {
-        return new PxMaterial(Native.PxPhysics.CreateMaterial(physics.NativePtr, staticFriction, dynamicFriction, restitution));
+        return GetOrCreateCache(Native.PxPhysics.CreateMaterial(physics.NativePtr, staticFriction, dynamicFriction, restitution), ptr => new PxMaterial(ptr));
     }
 }

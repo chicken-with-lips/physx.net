@@ -13,6 +13,9 @@ internal static class PxPhysics
     [DllImport("PhysX.Native", EntryPoint = "physx_PxPhysics_CreateShape")]
     public static extern IntPtr CreateShape(IntPtr physics, ref PxBoxGeometry geometry, IntPtr material, bool isExclusive, PxShapeFlag shapeFlags);
 
+    [DllImport("PhysX.Native", EntryPoint = "physx_PxPhysics_CreateShape")]
+    public static extern IntPtr CreateShape(IntPtr physics, ref PxSphereGeometry geometry, IntPtr material, bool isExclusive, PxShapeFlag shapeFlags);
+
     [DllImport("PhysX.Native", EntryPoint = "physx_PxPhysics_CreateRigidDynamic")]
     public static extern IntPtr CreateRigidDynamic(IntPtr physics, ref PxTransform transform);
 
@@ -23,5 +26,5 @@ internal static class PxPhysics
     public static extern ref PxTolerancesScale GetTolerancesScale(IntPtr physics);
 
     [DllImport("PhysX.Native", EntryPoint = "physx_PxPhysics_InitExtensions")]
-    public static extern bool InitExtensions(IntPtr physics);
+    public static extern bool InitExtensions(IntPtr physics, IntPtr pvd);
 }

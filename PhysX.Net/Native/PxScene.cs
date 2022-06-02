@@ -30,7 +30,7 @@ internal struct PxSceneDescTransfer
     public IntPtr CcdContactModifyCallback;
     public IntPtr FilterShaderData;
     public uint FilterShaderDataSize;
-    public IntPtr FilterShader;
+    public PxFilterShaderCallback FilterShader;
     public IntPtr FilterCallback;
     public PxPairFilteringMode KineKineFilteringMode;
     public PxPairFilteringMode StaticKineFilteringMode;
@@ -69,14 +69,14 @@ internal struct PxSceneDescTransfer
     public PxSceneDescTransfer(PxSceneDesc desc)
     {
         Gravity = desc.Gravity;
-        SimulationEventCallback = desc.SimulationEventCallback;
+        SimulationEventCallback = desc.SimulationEventCallback?.NativePtr ?? IntPtr.Zero;
         ContactModifyCallback = desc.ContactModifyCallback;
         CcdContactModifyCallback = desc.CcdContactModifyCallback;
 
         FilterShaderData = desc.FilterShaderData;
         FilterShaderDataSize = desc.FilterShaderDataSize;
         FilterShader = desc.FilterShader;
-        FilterCallback = desc.FilterCallback;
+        FilterCallback = desc.FilterCallback.NativePtr;
 
         KineKineFilteringMode = desc.KineKineFilteringMode;
         StaticKineFilteringMode = desc.StaticKineFilteringMode;

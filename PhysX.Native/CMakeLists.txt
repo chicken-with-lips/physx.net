@@ -27,7 +27,11 @@ add_library(${PROJECT_NAME} SHARED
     src/PxRigidDynamic.cpp
     src/PxRigidStatic.cpp
     src/PxScene.cpp
+    src/PxSimulationEventCallback.cpp
+    src/PxSimulationFilterCallback.cpp
     src/PxPhysics.cpp
+    src/PxPvd.cpp
+    src/PxPvdTransport.cpp
     src/PxVersion.cpp
 )
 add_definitions(-DPX_PHYSX_STATIC_LIB -DNDEBUG)
@@ -39,13 +43,13 @@ include_directories(${PROJECT_NAME}
 
 target_link_libraries(${PROJECT_NAME}
     PhysX_static_64
-    PhysXCommon_static_64
-    PhysXCooking_static_64
-    PhysXFoundation_static_64
     PhysXPvdSDK_static_64
     PhysXVehicle_static_64
-    PhysXExtensions_static_64
     PhysXCharacterKinematic_static_64
+    PhysXExtensions_static_64
+    PhysXCooking_static_64
+    PhysXCommon_static_64
+    PhysXFoundation_static_64
 )
 
 add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:${PROJECT_NAME}> /home/jolly_samurai/Projects/chicken-with-lips/duck/Build/Debug/net6.0/${PROJECT_NAME}.so)

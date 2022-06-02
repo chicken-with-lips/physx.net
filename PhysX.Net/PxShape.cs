@@ -12,7 +12,9 @@ public class PxShape : PxBase<PxShape>
     public static PxShape Create(PxPhysics physics, PxGeometry geometry, PxMaterial material, bool isExclusive, PxShapeFlag shapeFlags)
     {
         if (geometry is PxBoxGeometry boxGeometry) {
-            return new PxShape(Native.PxPhysics.CreateShape(physics.NativePtr, ref boxGeometry, material.NativePtr, isExclusive, shapeFlags));
+            return GetOrCreateCache(Native.PxPhysics.CreateShape(physics.NativePtr, ref boxGeometry, material.NativePtr, isExclusive, shapeFlags), ptr => new PxShape(ptr));
+        } else if (geometry is PxSphereGeometry sphereGeometry) {
+            return GetOrCreateCache(Native.PxPhysics.CreateShape(physics.NativePtr, ref sphereGeometry, material.NativePtr, isExclusive, shapeFlags), ptr => new PxShape(ptr));
         }
 
         throw new Exception("FIXME: errors");
