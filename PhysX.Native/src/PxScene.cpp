@@ -12,7 +12,12 @@ extern "C" bool physx_PxScene_FetchResults(PxScene *scene, bool block, uint *err
 }
 
 extern "C" void physx_PxScene_AddActor(PxScene *scene, PxActor *actor) {
-    return scene->addActor(*actor);
+    scene->addActor(*actor);
+}
+
+
+extern "C" void physx_PxScene_RemoveActor(PxScene *scene, PxActor *actor, bool wakeOnLostTouch) {
+    scene->removeActor(*actor, wakeOnLostTouch);
 }
 
 extern "C" void physx_PxScene_SetGravity(PxScene *scene, PxVec3 &vec) {

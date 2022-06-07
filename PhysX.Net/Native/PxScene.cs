@@ -14,6 +14,9 @@ internal static class PxScene
     [DllImport("PhysX.Native", EntryPoint = "physx_PxScene_AddActor")]
     public static extern void AddActor(IntPtr scene, IntPtr actor);
 
+    [DllImport("PhysX.Native", EntryPoint = "physx_PxScene_RemoveActor")]
+    public static extern void RemoveActor(IntPtr scene, IntPtr actor, bool wakeOnLostTouch = true);
+
     [DllImport("PhysX.Native", EntryPoint = "physx_PxScene_GetGravity")]
     public static extern Vector3 GetGravity(IntPtr scene);
 

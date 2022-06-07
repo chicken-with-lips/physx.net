@@ -70,6 +70,24 @@ public class PxScene : PxBase<PxScene>
     {
         Native.PxScene.AddActor(NativePtr, actor.NativePtr);
     }
+    
+    /// <summary>
+    /// Removes an actor from this scene.
+    /// </summary>
+    /// <remarks>
+	/// <para>You can not remove individual articulation links (see #PxArticulationLink) from the scene.
+	/// Use #removeArticulation() instead.</para>
+	/// <para>If the actor is a PxRigidActor then all assigned PxConstraint objects will get removed from the scene
+	/// automatically.</para>
+	/// <para>If the actor is in an aggregate it will be removed from the aggregate.</para>
+	/// </remarks>
+	/// <param name="actor">Actor to remove from scene.</param>
+	/// <param name="wakeOnLostTouch">Specifies whether touching objects from the previous frame should get woken up in
+	/// the next frame. Only applies to PxArticulation and PxRigidActor types.</param>
+    public void RemoveActor(PxActor actor, bool wakeOnLostTouch = true)
+    {
+        Native.PxScene.RemoveActor(NativePtr, actor.NativePtr, wakeOnLostTouch);
+    }
 
     public static PxScene Create(PxPhysics physics, PxSceneDesc sceneDesc)
     {
