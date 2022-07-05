@@ -27,3 +27,13 @@ extern "C" void physx_PxScene_SetGravity(PxScene *scene, PxVec3 &vec) {
 extern "C" PxVec3 physx_PxScene_GetGravity(PxScene *scene) {
     return scene->getGravity();
 }
+
+extern "C" bool physx_PxScene_Overlap(PxScene *scene, PxGeometry &geometry, PxTransform &pose/*, PxOverlapBuffer *hitCall*/,
+                                      PxU16 filterData) {
+    PxOverlapBuffer hitCall;
+
+
+    bool res = scene->overlap(geometry, pose, hitCall, PxQueryFilterData((PxQueryFlags) filterData));
+
+    return res;
+}
