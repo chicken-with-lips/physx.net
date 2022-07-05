@@ -22,6 +22,12 @@ internal static class PxScene
 
     [DllImport("PhysX.Native", EntryPoint = "physx_PxScene_SetGravity")]
     public static extern void SetGravity(IntPtr scene, Vector3 vector);
+
+    [DllImport("PhysX.Native", EntryPoint = "physx_PxScene_Overlap")]
+    public static extern bool Overlap(IntPtr scene, ref PxBoxGeometry geometry, ref PxTransform pose, PxQueryFlag filterData);
+
+    [DllImport("PhysX.Native", EntryPoint = "physx_PxScene_Overlap")]
+    public static extern bool Overlap(IntPtr scene, ref PxSphereGeometry geometry, ref PxTransform pose, PxQueryFlag filterData);
 }
 
 [StructLayout(LayoutKind.Sequential)]

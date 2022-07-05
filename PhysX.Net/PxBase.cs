@@ -59,7 +59,6 @@ public abstract class PxBase<T> : PxBase, IDisposable
 
     protected virtual void Dispose(bool disposing)
     {
-        throw new Exception("NOT IMPL");
         if (IsDisposed) {
             return;
         }

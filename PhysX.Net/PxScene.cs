@@ -70,23 +70,34 @@ public class PxScene : PxBase<PxScene>
     {
         Native.PxScene.AddActor(NativePtr, actor.NativePtr);
     }
-    
+
     /// <summary>
     /// Removes an actor from this scene.
     /// </summary>
     /// <remarks>
-	/// <para>You can not remove individual articulation links (see #PxArticulationLink) from the scene.
-	/// Use #removeArticulation() instead.</para>
-	/// <para>If the actor is a PxRigidActor then all assigned PxConstraint objects will get removed from the scene
-	/// automatically.</para>
-	/// <para>If the actor is in an aggregate it will be removed from the aggregate.</para>
-	/// </remarks>
-	/// <param name="actor">Actor to remove from scene.</param>
-	/// <param name="wakeOnLostTouch">Specifies whether touching objects from the previous frame should get woken up in
-	/// the next frame. Only applies to PxArticulation and PxRigidActor types.</param>
+    /// <para>You can not remove individual articulation links (see #PxArticulationLink) from the scene.
+    /// Use #removeArticulation() instead.</para>
+    /// <para>If the actor is a PxRigidActor then all assigned PxConstraint objects will get removed from the scene
+    /// automatically.</para>
+    /// <para>If the actor is in an aggregate it will be removed from the aggregate.</para>
+    /// </remarks>
+    /// <param name="actor">Actor to remove from scene.</param>
+    /// <param name="wakeOnLostTouch">Specifies whether touching objects from the previous frame should get woken up in
+    /// the next frame. Only applies to PxArticulation and PxRigidActor types.</param>
     public void RemoveActor(PxActor actor, bool wakeOnLostTouch = true)
     {
         Native.PxScene.RemoveActor(NativePtr, actor.NativePtr, wakeOnLostTouch);
+    }
+
+    public bool Overlap(PxGeometry geometry, PxTransform pose, PxQueryFlag filterData = PxQueryFlag.Dynamic | PxQueryFlag.Static)
+    {
+        if (geometry is PxBoxGeometry box) {
+            return Native.PxScene.Overlap(NativePtr, ref box, ref pose, filterData);
+        } else if (geometry is PxSphereGeometry sphere) {
+            return Native.PxScene.Overlap(NativePtr, ref sphere, ref pose, filterData);
+        }
+
+        throw new ApplicationException("TODO: errors");
     }
 
     public static PxScene Create(PxPhysics physics, PxSceneDesc sceneDesc)
@@ -1004,7 +1015,7 @@ public enum PxSceneQueryUpdateMode
 }
 
 public delegate PxFilterFlag PxFilterShaderCallback(
-	PxFilterObjectFlag attributes0, ref PxFilterData filterData0,
-	PxFilterObjectFlag attributes1, ref PxFilterData filterData1,
+    PxFilterObjectFlag attributes0, ref PxFilterData filterData0,
+    PxFilterObjectFlag attributes1, ref PxFilterData filterData1,
     out PxPairFlag pairFlags
 );
