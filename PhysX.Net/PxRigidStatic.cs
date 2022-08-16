@@ -1,4 +1,4 @@
-namespace ChickenWithLips.PhysX.Net;
+namespace ChickenWithLips.PhysX;
 
 /// <summary>
 /// PxRigidDynamic represents a dynamic rigid simulation object in the physics SDK.

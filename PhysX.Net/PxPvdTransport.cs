@@ -1,4 +1,4 @@
-namespace ChickenWithLips.PhysX.Net;
+namespace ChickenWithLips.PhysX;
 
 /// <summary>
 /// PxPvdTransport is an interface representing the data transport mechanism.

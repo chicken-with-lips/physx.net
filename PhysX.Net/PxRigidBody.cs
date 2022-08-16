@@ -1,6 +1,6 @@
 using System.Numerics;
 
-namespace ChickenWithLips.PhysX.Net;
+namespace ChickenWithLips.PhysX;
 
 /// <summary>
 /// PxRigidBody is a base class shared between dynamic rigid body objects.

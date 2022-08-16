@@ -1,6 +1,6 @@
 using System.Numerics;
 
-namespace ChickenWithLips.PhysX.Net;
+namespace ChickenWithLips.PhysX;
 
 public static class PxRigidBodyExt
 {

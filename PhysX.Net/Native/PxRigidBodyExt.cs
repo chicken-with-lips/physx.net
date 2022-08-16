@@ -1,7 +1,7 @@
 ﻿using System.Numerics;
 using System.Runtime.InteropServices;
 
-namespace ChickenWithLips.PhysX.Net.Native;
+namespace ChickenWithLips.PhysX.Native;
 
 internal static class PxRigidBodyExt
 {

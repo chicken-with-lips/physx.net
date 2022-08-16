@@ -1,4 +1,4 @@
-namespace ChickenWithLips.PhysX.Net;
+namespace ChickenWithLips.PhysX;
 
 /// <summary>
 /// Material class to represent a set of surface properties.

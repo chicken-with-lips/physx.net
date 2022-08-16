@@ -1,4 +1,4 @@
-namespace ChickenWithLips.PhysX.Net;
+namespace ChickenWithLips.PhysX;
 
 public class PxFoundation : PxBase<PxFoundation>
 {

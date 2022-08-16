@@ -1,4 +1,4 @@
-namespace ChickenWithLips.PhysX.Net;
+namespace ChickenWithLips.PhysX;
 
 /// <summary>
 /// Filter callback to specify handling of collision pairs.

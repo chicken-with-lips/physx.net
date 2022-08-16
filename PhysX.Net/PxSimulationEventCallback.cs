@@ -1,6 +1,6 @@
 using System.Runtime.InteropServices;
 
-namespace ChickenWithLips.PhysX.Net;
+namespace ChickenWithLips.PhysX;
 
 /// <summary>
 /// An interface class that the user can implement in order to receive simulation events.

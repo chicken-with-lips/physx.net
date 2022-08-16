@@ -1,6 +1,6 @@
-using ChickenWithLips.PhysX.Net.Native;
+using ChickenWithLips.PhysX.Native;
 
-namespace ChickenWithLips.PhysX.Net;
+namespace ChickenWithLips.PhysX;
 
 public class PxPhysics : PxBase<PxPhysics>
 {

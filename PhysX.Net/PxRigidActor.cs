@@ -1,4 +1,4 @@
-namespace ChickenWithLips.PhysX.Net;
+namespace ChickenWithLips.PhysX;
 
 /// <summary>
 /// PxRigidActor represents a base class shared between dynamic and static rigid bodies in the physics SDK.

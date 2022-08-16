@@ -1,8 +1,8 @@
 using System.Numerics;
 using System.Runtime.InteropServices;
-using ChickenWithLips.PhysX.Net.Native;
+using ChickenWithLips.PhysX.Native;
 
-namespace ChickenWithLips.PhysX.Net;
+namespace ChickenWithLips.PhysX;
 
 public class PxScene : PxBase<PxScene>
 {

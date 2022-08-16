@@ -1,6 +1,6 @@
-using ChickenWithLips.PhysX.Net.Native;
+using ChickenWithLips.PhysX.Native;
 
-namespace ChickenWithLips.PhysX.Net;
+namespace ChickenWithLips.PhysX;
 
 /// <summary>
 /// PxPvd is the top-level class for the PVD framework, and the main customer interface for PVD configuration.
