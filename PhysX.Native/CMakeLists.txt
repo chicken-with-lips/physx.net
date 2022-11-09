@@ -1,12 +1,13 @@
 cmake_minimum_required(VERSION 3.22)
+
 project(PhysX.Native VERSION 1.0 LANGUAGES CXX)
 
-set(PHYSX_ROOT_DIR "${CMAKE_SOURCE_DIR}/../PhysX")
 set(CMAKE_CXX_STANDARD 14)
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++1y -Wall -Wextra -Wno-catch-value -Wno-unused-parameter -fPIC")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++1y -Wall -Wextra -Wno-catch-value -Wno-unused-parameter -Wunused-but-set-variable -fPIC")
+set(PHYSX_ROOT_DIR "${CMAKE_SOURCE_DIR}/../PhysX")
 
 if (CMAKE_CONFIGURATION_TYPES)
-    set(CMAKE_CONFIGURATION_TYPES Debug Release Profile Checked)
+    set(CMAKE_CONFIGURATION_TYPES debug release profile checked)
     set(CMAKE_CONFIGURATION_TYPES "${CMAKE_CONFIGURATION_TYPES}" CACHE STRING "Reset the configurations to what we need" FORCE)
     set(CMAKE_CXX_FLAGS_PROFILE "${CMAKE_CXX_FLAGS_RELEASE}")
     set(CMAKE_CXX_FLAGS_CHECKED "${CMAKE_CXX_FLAGS_RELEASE}")
@@ -34,17 +35,18 @@ add_library(${PROJECT_NAME} SHARED
     src/PxPvdTransport.cpp
     src/PxVersion.cpp
 )
-add_definitions(-DPX_PHYSX_STATIC_LIB -DNDEBUG)
+
+add_definitions(-DNDEBUG)
 
 include_directories(${PROJECT_NAME}
     PRIVATE "${PHYSX_ROOT_DIR}/physx/include"
-    PRIVATE "${PHYSX_ROOT_DIR}/pxshared/include"
 )
 
 target_link_libraries(${PROJECT_NAME}
     PhysX_static_64
     PhysXPvdSDK_static_64
     PhysXVehicle_static_64
+    PhysXVehicle2_static_64
     PhysXCharacterKinematic_static_64
     PhysXExtensions_static_64
     PhysXCooking_static_64

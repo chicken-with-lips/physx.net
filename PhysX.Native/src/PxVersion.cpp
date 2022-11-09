@@ -1,5 +1,5 @@
-#include "PxFoundation.h"
-#include "PxPhysicsVersion.h"
+#include "foundation/PxFoundation.h"
+#include "foundation/PxPhysicsVersion.h"
 
 using namespace physx;
 

@@ -118,7 +118,7 @@ public readonly struct PxContactPairHeader
 
 	@see PxActor
 	*/
-    public readonly PxRigidActor[] Actors;
+    public readonly PxActor[] Actors;
 
     /**
 	\brief Stream containing extra data as requested in the PxPairFlag flags of the simulation filter.

@@ -1,6 +1,4 @@
-[submodule "External/PhysX"]
-	path = External/PhysX
-	url = git@github.com:NVIDIAGameWorks/PhysX.git
 [submodule "PhysX"]
 	path = PhysX
-	url = git@github.com:NVIDIAGameWorks/PhysX.git
+	url = git@github.com:NVIDIA-Omniverse/PhysX.git
+	branch = release/104.0

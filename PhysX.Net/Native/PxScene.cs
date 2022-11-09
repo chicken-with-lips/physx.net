@@ -50,15 +50,10 @@ internal struct PxSceneDescTransfer
     public PxSolverType SolverType;
     public float BounceThresholdVelocity;
     public float FrictionOffsetThreshold;
-    public float CcdMaxSeparation;
-    public float SolverOffsetSlop;
+    public float FrictionCorrelationDistance;
     public PxSceneFlag Flags;
     public IntPtr CpuDispatcher;
     public IntPtr CudaContextManager;
-    public PxPruningStructureType StaticStructure;
-    public PxPruningStructureType DynamicStructure;
-    public uint DynamicTreeRebuildRateHint;
-    public PxSceneQueryUpdateMode SceneQueryUpdateMode;
     public IntPtr UserData;
     public uint SolverBatchSize;
     public uint SolverArticulationBatchSize;
@@ -68,11 +63,14 @@ internal struct PxSceneDescTransfer
     public uint ContactReportStreamBufferSize;
     public uint CcdMaxPasses;
     public float CcdThreshold;
+    public float CcdMaxSeparation;
     public float WakeCounterResetValue;
     public PxBounds3 SanityBounds;
     public PxgDynamicsMemoryConfig GpuDynamicsConfig;
     public uint GpuMaxNumPartitions;
+    public uint GpuMaxNumStaticPartitions;
     public uint GpuComputeVersion;
+    public uint ContactPairSlabSize;
     public readonly PxTolerancesScale TolerancesScale;
 
     public PxSceneDescTransfer(PxSceneDesc desc)
@@ -97,18 +95,13 @@ internal struct PxSceneDescTransfer
         SolverType = desc.SolverType;
         BounceThresholdVelocity = desc.BounceThresholdVelocity;
         FrictionOffsetThreshold = desc.FrictionOffsetThreshold;
+        FrictionCorrelationDistance = desc.FrictionCorrelationDistance;
         CcdMaxSeparation = desc.CcdMaxSeparation;
-        SolverOffsetSlop = desc.SolverOffsetSlop;
 
         Flags = desc.Flags;
 
         CpuDispatcher = desc.CpuDispatcher.NativePtr;
         CudaContextManager = desc.CudaContextManager;
-
-        StaticStructure = desc.StaticStructure;
-        DynamicStructure = desc.DynamicStructure;
-        DynamicTreeRebuildRateHint = desc.DynamicTreeRebuildRateHint;
-        SceneQueryUpdateMode = desc.SceneQueryUpdateMode;
 
         UserData = desc.UserData;
 
@@ -124,8 +117,10 @@ internal struct PxSceneDescTransfer
         WakeCounterResetValue = desc.WakeCounterResetValue;
         SanityBounds = desc.SanityBounds;
         GpuMaxNumPartitions = desc.GpuMaxNumPartitions;
+        GpuMaxNumStaticPartitions = desc.GpuMaxNumStaticPartitions;
         GpuComputeVersion = desc.GpuComputeVersion;
         TolerancesScale = desc.TolerancesScale;
+        ContactPairSlabSize = desc.ContactPairSlabSize;
 
         Limits = desc.Limits;
         GpuDynamicsConfig = desc.GpuDynamicsConfig;

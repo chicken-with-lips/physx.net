@@ -59,15 +59,10 @@ public:
     PxSolverType::Enum solverType;
     PxReal bounceThresholdVelocity;
     PxReal frictionOffsetThreshold;
-    PxReal ccdMaxSeparation;
-    PxReal solverOffsetSlop;
+    PxReal frictionCorrelationDistance;
     PxU32 flags;
     PxCpuDispatcher *cpuDispatcher;
     PxCudaContextManager *cudaContextManager;
-    PxPruningStructureType::Enum staticStructure;
-    PxPruningStructureType::Enum dynamicStructure;
-    PxU32 dynamicTreeRebuildRateHint;
-    PxSceneQueryUpdateMode::Enum sceneQueryUpdateMode;
     void *userData;
     PxU32 solverBatchSize;
     PxU32 solverArticulationBatchSize;
@@ -77,11 +72,14 @@ public:
     PxU32 contactReportStreamBufferSize;
     PxU32 ccdMaxPasses;
     PxReal ccdThreshold;
+    PxReal ccdMaxSeparation;
     PxReal wakeCounterResetValue;
     PxBounds3 sanityBounds;
     PxgDynamicsMemoryConfig gpuDynamicsConfig;
     PxU32 gpuMaxNumPartitions;
+    PxU32 gpuMaxNumStaticPartitions;
     PxU32 gpuComputeVersion;
+    PxU32 contactPairSlabSize;
 
 private:
     PxTolerancesScale tolerancesScale;
@@ -107,15 +105,11 @@ public:
         desc.solverType = solverType;
         desc.bounceThresholdVelocity = bounceThresholdVelocity;
         desc.frictionOffsetThreshold = frictionOffsetThreshold;
+        desc.frictionCorrelationDistance = frictionCorrelationDistance;
         desc.ccdMaxSeparation = ccdMaxSeparation;
-        desc.solverOffsetSlop = solverOffsetSlop;
         desc.flags = (PxSceneFlags) flags;
         desc.cpuDispatcher = cpuDispatcher;
         desc.cudaContextManager = cudaContextManager;
-        desc.staticStructure = staticStructure;
-        desc.dynamicStructure = dynamicStructure;
-        desc.dynamicTreeRebuildRateHint = dynamicTreeRebuildRateHint;
-        desc.sceneQueryUpdateMode = sceneQueryUpdateMode;
         desc.userData = userData;
         desc.solverBatchSize = solverBatchSize;
         desc.solverArticulationBatchSize = solverArticulationBatchSize;
@@ -129,7 +123,9 @@ public:
         desc.sanityBounds = sanityBounds;
         desc.gpuDynamicsConfig = gpuDynamicsConfig;
         desc.gpuMaxNumPartitions = gpuMaxNumPartitions;
+        desc.gpuMaxNumStaticPartitions = gpuMaxNumStaticPartitions;
         desc.gpuComputeVersion = gpuComputeVersion;
+        desc.contactPairSlabSize = contactPairSlabSize;
     }
 };
 
@@ -162,9 +158,9 @@ physx_PxPhysics_CreateMaterial(PxPhysics *physics, float staticFriction, float d
 }
 
 extern "C" void *
-physx_PxPhysics_CreateShape(PxPhysics *physics, PxGeometry *geometry, PxMaterial *material, bool isExclusive,
+physx_PxPhysics_CreateShape(PxPhysics *physics, PxGeometry& geometry, PxMaterial *material, bool isExclusive,
                             PxU8 shapeFlags) {
-    return physics->createShape(*geometry, *material, isExclusive, (PxShapeFlags) shapeFlags);
+    return physics->createShape(geometry, *material, isExclusive, (PxShapeFlags) shapeFlags);
 }
 
 extern "C" void *

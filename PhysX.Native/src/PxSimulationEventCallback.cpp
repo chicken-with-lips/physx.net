@@ -7,7 +7,7 @@ using namespace physx;
 
 struct PxContactPairHeaderTransfer {
 public:
-    PxRigidActor *actors[2];
+    PxActor *actors[2];
     const PxU8 *extraDataStream;
     PxU16 extraDataStreamSize;
     PxU16 flags;

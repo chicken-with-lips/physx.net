@@ -114,6 +114,14 @@ public readonly struct PxTolerancesScale
 {
     public readonly float Length;
     public readonly float Speed;
+
+    public PxTolerancesScale(float defaultLength, float defaultSpeed)
+    {
+        Length = defaultLength;
+        Speed = defaultSpeed;
+    }
+
+    public static PxTolerancesScale Default => new PxTolerancesScale(1, 10);
 }
 
 [StructLayout(LayoutKind.Sequential)]
@@ -234,28 +242,20 @@ public struct PxSceneDesc
 // 	*/
     public float FrictionOffsetThreshold;
 
+//     /**
+// 	\brief Friction correlation distance used to decide whether contacts are close enough to be merged into a single friction anchor point or not.
 //
-// 	/**
-// 	\brief A threshold for speculative CCD. Used to control whether bias, restitution or a combination of the two are used to resolve the contacts.
+// 	\note If the correlation distance is larger than the distance between contact points generated between a pair of shapes, some of the contacts may not experience frictional forces.
 //
-// 	\note This only has any effect on contacting pairs where one of the bodies has PxRigidBodyFlag::eENABLE_SPECULATIVE_CCD raised.
+// 	\note This parameter can be used to tune the correlation distance used in the solver. Contact points can be merged into a single friction anchor if the distance between the contacts is smaller than correlation distance.
 //
 // 	<b>Range:</b> [0, PX_MAX_F32)<br>
-// 	<b>Default:</b> 0.04 * PxTolerancesScale::length
-// 	*/
+// 	<b>Default:</b> 0.025f * PxTolerancesScale::length
 //
-    public float CcdMaxSeparation;
+// 	@see PxScene.setFrictionCorrelationDistance() PxScene.getFrictionCorrelationDistance()
+// 	*/
+    public float FrictionCorrelationDistance;
 
-//
-// 	/**
-// 	\brief A slop value used to zero contact offsets from the body's COM on an axis if the offset along that axis is smaller than this threshold. Can be used to compensate
-// 	for small numerical errors in contact generation.
-//
-// 	<b>Range:</b> [0, PX_MAX_F32)<br>
-// 	<b>Default:</b> 0.0
-// 	*/
-//
-    public float SolverOffsetSlop;
 
 //
 // 	/**
@@ -285,52 +285,12 @@ public struct PxSceneDesc
 
 //
 // 	/**
-// 	\brief Defines the structure used to store static objects.
-//
-// 	\note Only PxPruningStructureType::eSTATIC_AABB_TREE and PxPruningStructureType::eDYNAMIC_AABB_TREE are allowed here.
-// 	*/
-    public PxPruningStructureType StaticStructure;
-
-//
-// 	/**
-// 	\brief Defines the structure used to store dynamic objects.
-// 	*/
-    public PxPruningStructureType DynamicStructure;
-
-//
-// 	/**
-// 	\brief Hint for how much work should be done per simulation frame to rebuild the pruning structure.
-//
-// 	This parameter gives a hint on the distribution of the workload for rebuilding the dynamic AABB tree
-// 	pruning structure #PxPruningStructureType::eDYNAMIC_AABB_TREE. It specifies the desired number of simulation frames
-// 	the rebuild process should take. Higher values will decrease the workload per frame but the pruning
-// 	structure will get more and more outdated the longer the rebuild takes (which can make
-// 	scene queries less efficient).
-//
-// 	\note Only used for #PxPruningStructureType::eDYNAMIC_AABB_TREE pruning structure.
-//
-// 	\note This parameter gives only a hint. The rebuild process might still take more or less time depending on the
-// 	number of objects involved.
-//
-// 	<b>Range:</b> [4, PX_MAX_U32)<br>
-// 	<b>Default:</b> 100
-// 	*/
-    public uint DynamicTreeRebuildRateHint;
-
-//
-// 	/**
-// 	\brief Defines the scene query update mode.
-// 	<b>Default:</b> PxSceneQueryUpdateMode::eBUILD_ENABLED_COMMIT_ENABLED
-// 	*/
-    public PxSceneQueryUpdateMode SceneQueryUpdateMode;
-
-//
-// 	/**
 // 	\brief Will be copied to PxScene::userData.
 //
 // 	<b>Default:</b> NULL
 // 	*/
     public IntPtr UserData;
+
 
 //
 // 	/**
@@ -471,6 +431,19 @@ public struct PxSceneDesc
 //
     public float CcdThreshold;
 
+
+//
+// 	/**
+// 	\brief A threshold for speculative CCD. Used to control whether bias, restitution or a combination of the two are used to resolve the contacts.
+//
+// 	\note This only has any effect on contacting pairs where one of the bodies has PxRigidBodyFlag::eENABLE_SPECULATIVE_CCD raised.
+//
+// 	<b>Range:</b> [0, PX_MAX_F32)<br>
+// 	<b>Default:</b> 0.04 * PxTolerancesScale::length
+// 	*/
+//
+    public float CcdMaxSeparation;
+
 //
 // 	/**
 // 	\brief The wake counter reset value
@@ -511,11 +484,30 @@ public struct PxSceneDesc
 // 	*/
     public uint GpuMaxNumPartitions;
 
+    /// <summary>Limitation for the number of static rigid body partitions in the GPU dynamics pipeline.</summary>
+    /// <remarks>
+    /// <b>Range:</b> (1, 255)<br/>
+	/// <b>Default:</b> 16
+	/// </remarks>
+    public uint	GpuMaxNumStaticPartitions;
+
 //
 // 	/**
 // 	\brief Defines which compute version the GPU dynamics should target. DO NOT MODIFY
 // 	*/
     public uint GpuComputeVersion;
+
+
+    //    /**
+    // \brief Defines the size of a contact pool slab.
+    // Contact pairs and associated data are allocated using a pool allocator. Increasing the slab size can trade
+    // off some performance spikes when a large number of new contacts are found for an increase in overall memory 
+    // usage.
+    //
+    // <b>Range:</b>(1, PX_MAX_U32)<br>
+    // <b>Default:</b> 256
+    // */
+    public uint ContactPairSlabSize;
 
 //
 // private:
@@ -582,25 +574,19 @@ public struct PxSceneDesc
         KineKineFilteringMode = PxPairFilteringMode.Default;
         StaticKineFilteringMode = PxPairFilteringMode.Default;
 
-        BroadPhaseType = PxBroadPhaseType.Abp;
+        BroadPhaseType = PxBroadPhaseType.Pabp;
         BroadPhaseCallback = IntPtr.Zero;
 
         FrictionType = PxFrictionType.Patch;
         SolverType = PxSolverType.Pgs;
         BounceThresholdVelocity = 0.2f * scale.Speed;
         FrictionOffsetThreshold = 0.04f * scale.Length;
-        CcdMaxSeparation = 0.04f * scale.Length;
-        SolverOffsetSlop = 0.0f;
+        FrictionCorrelationDistance = 0.025f * scale.Length;
 
         Flags = PxSceneFlag.EnablePcm;
 
         CpuDispatcher = null;
         CudaContextManager = IntPtr.Zero;
-
-        StaticStructure = PxPruningStructureType.DynamicAabbTree;
-        DynamicStructure = PxPruningStructureType.DynamicAabbTree;
-        DynamicTreeRebuildRateHint = 100;
-        SceneQueryUpdateMode = PxSceneQueryUpdateMode.BuildEnabledCommitEnabled;
 
         UserData = IntPtr.Zero;
 
@@ -613,10 +599,13 @@ public struct PxSceneDesc
         ContactReportStreamBufferSize = 8192;
         CcdMaxPasses = 1;
         CcdThreshold = float.MaxValue;
+        CcdMaxSeparation = 0.04f * scale.Length;
         WakeCounterResetValue = 20.0f * 0.02f;
         SanityBounds = PxBounds3.Default;
         GpuMaxNumPartitions = 8;
+        GpuMaxNumStaticPartitions = 16;
         GpuComputeVersion = 0;
+        ContactPairSlabSize = 256;
         TolerancesScale = scale;
 
         Limits = new PxSceneLimits();
@@ -946,23 +935,15 @@ public readonly struct PxBounds3
 [StructLayout(LayoutKind.Sequential)]
 public struct PxgDynamicsMemoryConfig
 {
-    /// <summary>Capacity of constraint buffer allocated in GPU global memory.</summary>
-    public uint ConstraintBufferCapacity;
-
-    /// <summary>Capacity of contact buffer allocated in GPU global memory.</summary>	
-    public uint ContactBufferCapacity;
-
     /// <summary>Capacity of temp buffer allocated in pinned host memory.</summary>
     public uint TempBufferCapacity;
 
     /// <summary>Size of contact stream buffer allocated in pinned host memory. This is double-buffered so total allocation size = 2* contactStreamCapacity * sizeof(PxContact).</summary>
-    public uint ContactStreamSize;
+    public uint MaxRigidContactCount;
 
     /// <summary>Size of the contact patch stream buffer allocated in pinned host memory. This is double-buffered so total allocation size = 2 * patchStreamCapacity * sizeof(PxContactPatch).</summary>
-    public uint PatchStreamSize;
+    public uint MaxRigidPatchCount;
 
-    /// <summary>Capacity of force buffer allocated in pinned host memory.</summary>
-    public uint ForceStreamCapacity;
 
     /// <summary>Initial capacity of the GPU and pinned host memory heaps. Additional memory will be allocated if more memory is required.</summary>
     public uint HeapCapacity;
@@ -970,16 +951,32 @@ public struct PxgDynamicsMemoryConfig
     /// <summary>Capacity of found and lost buffers allocated in GPU global memory. This is used for the found/lost pair reports in the BP.</summary>	
     public uint FoundLostPairsCapacity;
 
+    /// <summary>Capacity of found and lost buffers in aggregate system allocated in GPU global memory. This is used for the found/lost pair reports in AABB manager.</summary>
+    public uint FoundLostAggregatePairsCapacity;
+
+    /// <summary>Capacity of total number of aggregate pairs allocated in GPU global memory.</summary>
+    public uint TotalAggregatePairsCapacity;
+
+    public uint MaxSoftBodyContacts;
+    public uint MaxFemClothContacts;
+    public uint MaxParticleContacts;
+    public uint CollisionStackSize;
+    public uint MaxHairContacts;
+
     public PxgDynamicsMemoryConfig()
     {
-        ConstraintBufferCapacity = 32 * 1024 * 1024;
-        ContactBufferCapacity = 24 * 1024 * 1024;
         TempBufferCapacity = 16 * 1024 * 1024;
-        ContactStreamSize = 1024 * 512;
-        PatchStreamSize = 1024 * 80;
-        ForceStreamCapacity = 1 * 1024 * 1024;
+        MaxRigidContactCount = 1024 * 512;
+        MaxRigidPatchCount = 1024 * 80;
         HeapCapacity = 64 * 1024 * 1024;
         FoundLostPairsCapacity = 256 * 1024;
+        FoundLostAggregatePairsCapacity = 1024;
+        TotalAggregatePairsCapacity = 1024;
+        MaxSoftBodyContacts = 1 * 1024 * 1024;
+        MaxFemClothContacts = 1 * 1024 * 1024;
+        MaxParticleContacts = 1 * 1024 * 1024;
+        CollisionStackSize = 64 * 1024 * 1024;
+        MaxHairContacts = 1 * 1024 * 1024;
     }
 }
 

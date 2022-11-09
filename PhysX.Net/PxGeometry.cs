@@ -34,6 +34,7 @@ public enum PxGeometryType
 public readonly struct PxBoxGeometry : PxGeometry
 {
     private readonly PxGeometryType Type = PxGeometryType.Box;
+
     public readonly Vector3 HalfExtents;
 
     public PxBoxGeometry(Vector3 halfExtents)
@@ -49,6 +50,8 @@ public readonly struct PxBoxGeometry : PxGeometry
 public readonly struct PxSphereGeometry : PxGeometry
 {
     private readonly PxGeometryType Type = PxGeometryType.Sphere;
+    private readonly float _typePadding = 0;
+
     public readonly float Radius;
 
     public PxSphereGeometry(float radius)

@@ -10,5 +10,7 @@ public enum PxBroadPhaseType
 
     /// <summary>Automatic box pruning</summary>
     Abp,
+    /// <summary>Parallel automatic box pruning.</summary>
+    Pabp,
     Gpu,
 }

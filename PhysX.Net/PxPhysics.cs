@@ -72,8 +72,8 @@ public class PxPhysics : PxBase<PxPhysics>
         return Native.PxPhysics.InitExtensions(NativePtr, pvd?.NativePtr ?? IntPtr.Zero);
     }
 
-    public static PxPhysics Create(PxFoundation foundation, uint version, bool trackOutstandingAllocations, PxPvd pvd)
+    public static PxPhysics Create(PxFoundation foundation, uint version, PxTolerancesScale scale, bool trackOutstandingAllocations, PxPvd pvd)
     {
-        return GetOrCreateCache(Native.PxFoundation.CreatePhysics(foundation.NativePtr, version, trackOutstandingAllocations, pvd.NativePtr), ptr => new PxPhysics(ptr));
+        return GetOrCreateCache(Native.PxFoundation.CreatePhysics(foundation.NativePtr, version, ref scale, trackOutstandingAllocations, pvd.NativePtr), ptr => new PxPhysics(ptr));
     }
 }
