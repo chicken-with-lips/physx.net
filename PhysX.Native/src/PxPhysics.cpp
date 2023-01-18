@@ -1,3 +1,4 @@
+#include "PxNative.h"
 #include "PxPhysics.h"
 #include "PxScene.h"
 #include "PxSimulationEventCallback.h"
@@ -129,11 +130,11 @@ public:
     }
 };
 
-extern "C" void *physx_PxPhysics_GetTolerancesScale(PxPhysics *physics) {
+PHYSX_CAPI void *physx_PxPhysics_GetTolerancesScale(PxPhysics *physics) {
     return (void *) &physics->getTolerancesScale();
 }
 
-extern "C" void *physx_PxPhysics_CreateScene(PxPhysics *physics, PxSceneDescTransfer &tmpDesc) {
+PHYSX_CAPI void *physx_PxPhysics_CreateScene(PxPhysics *physics, PxSceneDescTransfer &tmpDesc) {
     PxSceneDesc sceneDesc(tmpDesc.getTolerancesScale());
     tmpDesc.CopyTo(sceneDesc);
 
@@ -151,29 +152,29 @@ extern "C" void *physx_PxPhysics_CreateScene(PxPhysics *physics, PxSceneDescTran
     return scene;
 }
 
-extern "C" void *
+PHYSX_CAPI void *
 physx_PxPhysics_CreateMaterial(PxPhysics *physics, float staticFriction, float dynamicFriction, float restitution) {
     return physics->createMaterial(staticFriction, dynamicFriction,
                                    restitution);
 }
 
-extern "C" void *
+PHYSX_CAPI void *
 physx_PxPhysics_CreateShape(PxPhysics *physics, PxGeometry& geometry, PxMaterial *material, bool isExclusive,
                             PxU8 shapeFlags) {
     return physics->createShape(geometry, *material, isExclusive, (PxShapeFlags) shapeFlags);
 }
 
-extern "C" void *
+PHYSX_CAPI void *
 physx_PxPhysics_CreateRigidDynamic(PxPhysics *physics, PxTransform &transform) {
     return physics->createRigidDynamic(transform);
 }
 
-extern "C" void *
+PHYSX_CAPI void *
 physx_PxPhysics_CreateRigidStatic(PxPhysics *physics, PxTransform &transform) {
     return physics->createRigidStatic(transform);
 }
 
-extern "C" bool
+PHYSX_CAPI bool
 physx_PxPhysics_InitExtensions(PxPhysics *physics, PxPvd *pvd) {
     return PxInitExtensions(*physics, pvd);
 }

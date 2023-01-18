@@ -21,6 +21,61 @@ public interface PxRigidBody : PxRigidActor
     public float LinearDamping { get; set; }
 
     /// <summary>
+    /// Retrieves the linear velocity of an actor.
+    /// </summary>
+    /// <remarks>
+    /// It is not allowed to use this method while the simulation is running (except during PxScene::collide(), in PxContactModifyCallback or in contact report callbacks).
+    /// </remarks>
+    public Vector3 LinearVelocity { get; }
+
+    /// <summary>
+    /// Retrieves the angular velocity of the actor.
+    /// </summary>
+    /// <remarks>
+    /// It is not allowed to use this method while the simulation is running (except during PxScene::collide(), in PxContactModifyCallback or in contact report callbacks).
+    /// </remarks>
+    public Vector3 AngularVelocity { get; }
+
+    /// <summary>
+    /// Gets or sets the inertia tensor, using a parameter specified in mass space coordinates.
+    /// </summary>
+    /// <remarks>
+    /// Note that such matrices are diagonal -- the passed vector is the diagonal.
+    ///
+    /// If you have a non diagonal world/actor space inertia tensor(3x3 matrix). Then you need to
+    /// diagonalize it and set an appropriate mass space transform. See #setCMassLocalPose().
+    ///
+    /// The inertia tensor elements must be non-negative.
+    ///
+    /// \note A value of 0 in an element is interpreted as infinite inertia along that axis.
+    /// \note Values of 0 are not permitted for instances of PxArticulationLink but are permitted for instances of PxRigidDynamic.
+    /// <b>Default:</b> (1.0, 1.0, 1.0)
+    /// <b>Sleeping:</b> Does <b>NOT</b> wake the actor up automatically.
+    /// </remarks>
+    public Vector3 MassSpaceInertiaTensor { get; set; }
+
+    /// <summary>
+    /// Retrieves the diagonal inverse inertia tensor of the actor relative to the mass coordinate frame.
+    /// </summary>
+    /// <remarks>
+    ///This method retrieves a mass frame inverse inertia vector.
+    ///
+    /// \note A value of 0 in an element is interpreted as infinite inertia along that axis.
+    /// </remarks>
+    public Vector3 MassSpaceInvInertiaTensor { get; }
+
+    /// <summary>
+    /// Gets or sets the pose of the center of mass relative to the actor.	
+    /// </summary>
+    /// <remarks>
+    /// \note Setting an unrealistic center of mass which is a long way from the body can make it difficult for
+    /// the SDK to solve constraints. Perhaps leading to instability and jittering bodies.
+    ///
+    /// <b>Default:</b> the identity transform
+    /// </remarks>
+    public PxTransform CenterMassLocalPose { get; set; }
+
+    /// <summary>
     /// Raises or clears a particular rigid body flag.
     /// </summary>
     public void SetFlag(PxRigidBodyFlag flag, bool value);
@@ -77,6 +132,46 @@ public interface PxRigidBody : PxRigidActor
     /// <param name="mode">The mode to use when applying the force/impulse(see #PxForceMode).</param>
     /// <param name="autowake">Whether to wake up the object if it is asleep. If true and the current wake counter value is smaller than #PxSceneDesc::wakeCounterResetValue it will get increased to the reset value.</param>
     public void AddTorque(Vector3 torque, PxForceMode mode, bool autowake = true);
+
+    /// <summary>
+    /// Clears the accumulated forces (sets the accumulated force back to zero).
+    /// </summary>
+    /// <remarks>
+    /// Each actor has an acceleration and a velocity change accumulator which are directly modified using the modes PxForceMode::eACCELERATION
+    /// and PxForceMode::eVELOCITY_CHANGE respectively.  The modes PxForceMode::eFORCE and PxForceMode::eIMPULSE also modify these same
+    /// accumulators (see PxRigidBody::addForce() for details); therefore the effect of calling clearForce(PxForceMode::eFORCE) is equivalent to calling
+    /// clearForce(PxForceMode::eACCELERATION), and the effect of calling clearForce(PxForceMode::eIMPULSE) is equivalent to calling
+    /// clearForce(PxForceMode::eVELOCITY_CHANGE).
+    /// </remarks>
+    public void ClearForce(PxForceMode mode = PxForceMode.Force);
+
+    /// <summary>
+    /// Clears the impulsive torque defined in the global coordinate frame to the actor.
+    /// </summary>
+    /// <remarks>
+    /// Each actor has an angular acceleration and a velocity change accumulator which are directly modified using the modes PxForceMode::eACCELERATION 
+    /// and PxForceMode::eVELOCITY_CHANGE respectively.  The modes PxForceMode::eFORCE and PxForceMode::eIMPULSE also modify these same 
+    /// accumulators (see PxRigidBody::addTorque() for details); therefore the effect of calling clearTorque(PxForceMode::eFORCE) is equivalent to calling 
+    /// clearTorque(PxForceMode::eACCELERATION), and the effect of calling clearTorque(PxForceMode::eIMPULSE) is equivalent to calling 
+    /// clearTorque(PxForceMode::eVELOCITY_CHANGE).	
+    ///
+    /// \note The force modes PxForceMode::eIMPULSE and PxForceMode::eVELOCITY_CHANGE can not be applied to articulation links.
+    ///
+    /// \note It is invalid to use this method if the actor has not been added to a scene already or if PxActorFlag::eDISABLE_SIMULATION is set.
+    /// </remarks>
+    public void ClearTorque(PxForceMode mode = PxForceMode.Force);
+
+    /// <summary>
+    /// Sets the impulsive force and torque defined in the global coordinate frame to the actor.
+    /// </summary>
+    /// <remarks>
+    /// ::PxForceMode determines if the cleared torque is to be conventional or impulsive.
+    ///
+    /// \note The force modes PxForceMode::eIMPULSE and PxForceMode::eVELOCITY_CHANGE can not be applied to articulation links.
+    ///
+    /// \note It is invalid to use this method if the actor has not been added to a scene already or if PxActorFlag::eDISABLE_SIMULATION is set.
+    /// </remarks>
+    public void SetForceAndTorque(Vector3 force, Vector3 torque, PxForceMode mode = PxForceMode.Force);
 }
 
 public abstract class PxRigidBody<T> : PxRigidActor<T>, PxRigidBody
@@ -89,12 +184,24 @@ public abstract class PxRigidBody<T> : PxRigidActor<T>, PxRigidBody
         set => Native.PxRigidBody.SetAngularDamping(NativePtr, value);
     }
 
-    /// <summary>
-    /// Gets or sets the linear damping coefficient.
-    /// </summary>
     public float LinearDamping {
         get => Native.PxRigidBody.GetLinearDamping(NativePtr);
         set => Native.PxRigidBody.SetLinearDamping(NativePtr, value);
+    }
+
+    public Vector3 LinearVelocity => Native.PxRigidBody.GetLinearVelocity(NativePtr);
+    public Vector3 AngularVelocity => Native.PxRigidBody.GetAngularVelocity(NativePtr);
+
+    public Vector3 MassSpaceInertiaTensor {
+        get => Native.PxRigidBody.GetMassSpaceInertiaTensor(NativePtr);
+        set => Native.PxRigidBody.SetMassSpaceInertiaTensor(NativePtr, ref value);
+    }
+
+    public Vector3 MassSpaceInvInertiaTensor => Native.PxRigidBody.GetMassSpaceInvInertiaTensor(NativePtr);
+
+    public PxTransform CenterMassLocalPose {
+        get => Native.PxRigidBody.GetCMassLocalPose(NativePtr);
+        set => Native.PxRigidBody.SetCMassLocalPose(NativePtr, ref value);
     }
 
     #endregion
@@ -119,6 +226,21 @@ public abstract class PxRigidBody<T> : PxRigidActor<T>, PxRigidBody
     public void AddTorque(Vector3 torque, PxForceMode mode, bool autowake = true)
     {
         Native.PxRigidBody.AddTorque(NativePtr, ref torque, mode, autowake);
+    }
+
+    public void ClearForce(PxForceMode mode = PxForceMode.Force)
+    {
+        Native.PxRigidBody.ClearForce(NativePtr, mode);
+    }
+
+    public void ClearTorque(PxForceMode mode = PxForceMode.Force)
+    {
+        Native.PxRigidBody.ClearTorque(NativePtr, mode);
+    }
+
+    public void SetForceAndTorque(Vector3 force, Vector3 torque, PxForceMode mode = PxForceMode.Force)
+    {
+        Native.PxRigidBody.SetForceAndTorque(NativePtr, ref force, ref torque, mode);
     }
 
     #endregion

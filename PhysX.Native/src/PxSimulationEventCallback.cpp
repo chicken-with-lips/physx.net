@@ -1,3 +1,4 @@
+#include "PxNative.h"
 #include "PxPhysics.h"
 #include "PxScene.h"
 #include "PxSimulationEventCallback.h"
@@ -108,6 +109,6 @@ public:
     }
 };
 
-extern "C" void *physx_PxSimulationEventCallback_New(::onContact onContact) {
+PHYSX_CAPI void *physx_PxSimulationEventCallback_New(::onContact onContact) {
     return new ProxySimulationEventCallback(onContact);
 }

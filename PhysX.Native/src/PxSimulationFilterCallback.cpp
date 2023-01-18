@@ -1,3 +1,4 @@
+#include "PxNative.h"
 #include "PxPhysics.h"
 #include "PxScene.h"
 #include "PxSimulationEventCallback.h"
@@ -43,6 +44,6 @@ private:
     }
 };
 
-extern "C" void *physx_PxSimulationFilterCallback_New(::onStatusChange onStatusChange) {
+PHYSX_CAPI void *physx_PxSimulationFilterCallback_New(::onStatusChange onStatusChange) {
     return new ProxySimulationFilterCallback(onStatusChange);
 }

@@ -2,10 +2,68 @@
 
     <PropertyGroup>
         <TargetFramework>net6.0</TargetFramework>
+        <Configurations>checked;debug;profile;release</Configurations>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>disable</Nullable>
         <AssemblyName>ChickenWithLips.PhysX</AssemblyName>
         <RootNamespace>ChickenWithLips.PhysX</RootNamespace>
+        <LangVersion>10</LangVersion>
     </PropertyGroup>
+
+    <ItemGroup Condition="'$(Configuration)' == 'checked' AND '$(OS)' == 'Unix'">
+        <ContentWithTargetPath Include="..\PhysX.Native\bin\checked\PhysX.Native.so">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+            <TargetPath>PhysX.Native.so</TargetPath>
+        </ContentWithTargetPath>
+    </ItemGroup>
+
+    <ItemGroup Condition="'$(Configuration)' == 'debug' AND '$(OS)' == 'Unix'">
+        <ContentWithTargetPath Include="..\PhysX.Native\bin\debug\PhysX.Native.so">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+            <TargetPath>PhysX.Native.so</TargetPath>
+        </ContentWithTargetPath>
+    </ItemGroup>
+
+    <ItemGroup Condition="'$(Configuration)' == 'profile' AND '$(OS)' == 'Unix'">
+        <ContentWithTargetPath Include="..\PhysX.Native\bin\profile\PhysX.Native.so">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+            <TargetPath>PhysX.Native.so</TargetPath>
+        </ContentWithTargetPath>
+    </ItemGroup>
+
+    <ItemGroup Condition="'$(Configuration)' == 'release' AND '$(OS)' == 'Unix'">
+        <ContentWithTargetPath Include="..\PhysX.Native\bin\release\PhysX.Native.dll">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+            <TargetPath>PhysX.Native.dll</TargetPath>
+        </ContentWithTargetPath>
+    </ItemGroup>
+
+    <ItemGroup Condition="'$(Configuration)' == 'checked' AND '$(OS)' == 'Windows_NT'">
+        <ContentWithTargetPath Include="..\PhysX.Native\bin\checked\PhysX.Native.dll">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+            <TargetPath>PhysX.Native.dll</TargetPath>
+        </ContentWithTargetPath>
+    </ItemGroup>
+
+    <ItemGroup Condition="'$(Configuration)' == 'debug' AND '$(OS)' == 'Windows_NT'">
+        <ContentWithTargetPath Include="..\PhysX.Native\bin\debug\PhysX.Native.dll">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+            <TargetPath>PhysX.Native.dll</TargetPath>
+        </ContentWithTargetPath>
+    </ItemGroup>
+
+    <ItemGroup Condition="'$(Configuration)' == 'profile' AND '$(OS)' == 'Windows_NT'">
+        <ContentWithTargetPath Include="..\PhysX.Native\bin\profile\PhysX.Native.dll">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+            <TargetPath>PhysX.Native.dll</TargetPath>
+        </ContentWithTargetPath>
+    </ItemGroup>
+
+    <ItemGroup Condition="'$(Configuration)' == 'release' AND '$(OS)' == 'Windows_NT'">
+        <ContentWithTargetPath Include="..\PhysX.Native\bin\release\PhysX.Native.dll">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+            <TargetPath>PhysX.Native.dll</TargetPath>
+        </ContentWithTargetPath>
+    </ItemGroup>
 
 </Project>
