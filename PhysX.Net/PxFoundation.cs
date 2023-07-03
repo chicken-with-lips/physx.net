@@ -1,3 +1,5 @@
+using System.Runtime.CompilerServices;
+
 namespace ChickenWithLips.PhysX;
 
 public class PxFoundation : PxBase<PxFoundation>

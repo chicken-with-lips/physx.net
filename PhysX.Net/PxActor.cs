@@ -23,7 +23,7 @@ public abstract class PxActor<T> : PxBase<T>, PxActor
 
     public void SetActorFlag(PxActorFlag flag, bool value)
     {
-	    Native.PxActor.SetActorFlag(NativePtr, flag, value);
+        Native.PxActor.SetActorFlag(NativePtr, flag, value);
     }
 }
 

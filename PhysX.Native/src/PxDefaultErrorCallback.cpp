@@ -4,5 +4,5 @@
 using namespace physx;
 
 PHYSX_CAPI void *physx_PxDefaultErrorCallback_New() {
-    return (void *) new PxDefaultErrorCallback();
+    return new PxDefaultErrorCallback();
 }

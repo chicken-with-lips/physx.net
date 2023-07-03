@@ -4,5 +4,5 @@
 using namespace physx;
 
 PHYSX_CAPI void *physx_PxDefaultAllocator_New() {
-    return (void *) new PxDefaultAllocator();
+    return new PxDefaultAllocator();
 }

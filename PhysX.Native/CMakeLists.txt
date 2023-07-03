@@ -23,10 +23,10 @@ if(WIN32)
         set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /std:c++17")
 
         if (USE_STATIC_MSVC_RUNTIME_LIBRARY)
-		    set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
-	    else()
-		    set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded")
-	    endif()
+            set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
+        else()
+            set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded")
+        endif()
     endif()
 elseif(LINUX)
     set(TARGET_BUILD_PLATFORM "linux" CACHE INTERNAL "")
@@ -44,6 +44,8 @@ add_library(${PROJECT_NAME} SHARED
     src/PxDefaultAllocator.cpp
     src/PxDefaultCpuDispatcher.cpp
     src/PxDefaultErrorCallback.cpp
+    src/PxDistanceJoint.cpp
+    src/PxFixedJoint.cpp
     src/PxFoundation.cpp
     src/PxRigidActor.cpp
     src/PxRigidBody.cpp
@@ -52,8 +54,9 @@ add_library(${PROJECT_NAME} SHARED
     src/PxScene.cpp
     src/PxSimulationEventCallback.cpp
     src/PxSimulationFilterCallback.cpp
-    src/PxPhysics.cpp
     src/PxPvd.cpp
+    src/PxOmniPvd.cpp
+    src/PxPhysics.cpp
     src/PxPvdTransport.cpp
     src/PxVersion.cpp
 )
@@ -62,6 +65,7 @@ target_compile_definitions(${PROJECT_NAME} PRIVATE NDEBUG)
 
 include_directories(${PROJECT_NAME}
     PRIVATE include
+    PRIVATE Physx/physx/include
 )
 
 target_link_libraries(${PROJECT_NAME} PUBLIC
